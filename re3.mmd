@@ -1,0 +1,43 @@
+erDiagram
+    REPOSITORY ||--o{ INSTITUTION : responsibleRisk
+    REPOSITORY ||--o{ FUNDING_INFO : receives
+    REPOSITORY ||--o{ POLICY : compliesWith
+    REPOSITORY ||--o{ CERTIFICATE : holds
+    REPOSITORY ||--o{ APIS_AND_STANDARDS : supports
+
+    REPOSITORY {
+        string re3data_id PK
+        string repositoryName
+        string repositoryURL
+        string description
+        string contentType "Dataset, Image, Software, etc."
+        string dataAccess "open, restricted, closed"
+        string repositoryType "disciplinary, institutional, general"
+    }
+
+    INSTITUTION {
+        string institutionName
+        string institutionIdentifier "ROR, Ringgold, etc."
+        string institutionType "commercial, non-profit, etc."
+    }
+
+    FUNDING_INFO {
+        string funderName
+        string funderIdentifier "Crossref Funder ID"
+    }
+
+    POLICY {
+        string policyName
+        string policyURL
+    }
+
+    CERTIFICATE {
+        string certificateName "CoreTrustSeal, etc."
+        date startDate
+        date endDate
+    }
+
+    APIS_AND_STANDARDS {
+        string apiType "OAI-PMH, REST, etc."
+        string metadataStandard "Dublin Core, DataCite, etc."
+    }
