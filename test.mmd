@@ -1,36 +1,58 @@
-erDiagram
-    %% Metadata: Domain = E-Commerce, Version = 2.1.0
-    CUSTOMER ||--o{ ORDER : "places"
-    ORDER ||--|{ ORDER_ITEM : "contains"
-    PRODUCT ||--o{ ORDER_ITEM : "ordered in"
+flowchart TD
+    %% Styling and Class Definitions
+    classDef mainClass fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
+    classDef agent fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px;
+    classDef utility fill:#f5f5f5,stroke:#9e9e9e,stroke-width:1px,stroke-dasharray: 3 3;
 
-    CUSTOMER {
-        string customer_id PK "UUID, Unique identifier"
-        string email UK "Normalized, lowercase"
-        string status "ACTIVE | SUSPENDED | CLOSED"
-        datetime created_at "Audit: Timestamp on insert"
-    }
+    %% ==========================================
+    %% 1. IDENTITY & GOVERNANCE LAYER (Agent Group)
+    %% ==========================================
+    subgraph IdentityGroup [foaf:Agent Domain / Identity Layer]
+        Agent[foaf:Agent] :::agent
+        Org[foaf:Organization] :::agent
+        
+        Org -- "rdfs:subClassOf" --> Agent
+    end
 
-    ORDER {
-        string order_id PK "UUID"
-        string customer_id FK "References CUSTOMER.customer_id"
-        float total_amount "Calculated sum of items"
-        string currency "ISO 4217 code (e.g., USD, NOK)"
-        datetime ordered_at "Timestamp of checkout"
-    }
+    %% ==========================================
+    %% 2. ENTRY POINT LAYER (Catalog Group)
+    %% ==========================================
+    subgraph CatalogGroup [dcat:Catalog Domain / Endpoint Entry]
+        Catalog[dcat:Catalog] :::mainClass
+        
+        %% System configuration / routing elements can link here
+        Catalog -- "dct:publisher" --> Agent
+    end
 
-    PRODUCT {
-        string product_id PK "UUID"
-        string sku UK "Stock Keeping Unit"
-        string name "Display name"
-        decimal price "Current unit price"
-        bool is_active "Soft delete flag"
-    }
+    %% ==========================================
+    %% 3. EXPOSURE & API LAYER (DataService Group)
+    %% ==========================================
+    subgraph ServiceGroup [dcat:DataService Domain / API Gateways]
+        DataService[dcat:DataService] :::mainClass
+        EndpointURL["dcat:endpointURL (API Route)"] :::utility
+        
+        DataService -- "dcat:endpointURL" --> EndpointURL
+    end
 
-    ORDER_ITEM {
-        string item_id PK "UUID"
-        string order_id FK "References ORDER.order_id"
-        string product_id FK "References PRODUCT.product_id"
-        int quantity "Count, must be > 0"
-        decimal unit_price "Locked price at order time"
-    }
+    %% ==========================================
+    %% 4. STORAGE & PAYLOAD LAYER (Distribution Group)
+    %% ==========================================
+    subgraph StorageGroup [dcat:Distribution Domain / File & Download Assets]
+        Distribution[dcat:Distribution] :::mainClass
+        AccessURL["dcat:accessURL (Blob/File Path)"] :::utility
+        DownloadURL["dcat:downloadURL"] :::utility
+        
+        Distribution -- "dcat:accessURL" --> AccessURL
+        Distribution -- "dcat:downloadURL" --> DownloadURL
+    end
+
+    %% ==========================================
+    %% INTER-GROUP LINKS (The Glue Entity)
+    %% ==========================================
+    %% A Dataset bridges the catalog to its actual exposures
+    Dataset[dcat:Dataset] :::mainClass
+    
+    Catalog -- "dcat:dataset" --> Dataset
+    Dataset -- "dcat:distribution" --> Distribution
+    Dataset -- "dcat:accessService" --> DataService
+    Distribution -- "dcat:accessService" --> DataService
