@@ -1,58 +1,32 @@
-flowchart TD
-    %% Styling and Class Definitions
-    classDef mainClass fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
-    classDef agent fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px;
-    classDef utility fill:#f5f5f5,stroke:#9e9e9e,stroke-width:1px,stroke-dasharray: 3 3;
-
-    %% ==========================================
-    %% 1. IDENTITY & GOVERNANCE LAYER (Agent Group)
-    %% ==========================================
-    subgraph IdentityGroup [foaf:Agent Domain / Identity Layer]
-        Agent[foaf:Agent] :::agent
-        Org[foaf:Organization] :::agent
-        
-        Org -- "rdfs:subClassOf" --> Agent
-    end
-
-    %% ==========================================
-    %% 2. ENTRY POINT LAYER (Catalog Group)
-    %% ==========================================
-    subgraph CatalogGroup [dcat:Catalog Domain / Endpoint Entry]
-        Catalog[dcat:Catalog] :::mainClass
-        
-        %% System configuration / routing elements can link here
-        Catalog -- "dct:publisher" --> Agent
-    end
-
-    %% ==========================================
-    %% 3. EXPOSURE & API LAYER (DataService Group)
-    %% ==========================================
-    subgraph ServiceGroup [dcat:DataService Domain / API Gateways]
-        DataService[dcat:DataService] :::mainClass
-        EndpointURL["dcat:endpointURL (API Route)"] :::utility
-        
-        DataService -- "dcat:endpointURL" --> EndpointURL
-    end
-
-    %% ==========================================
-    %% 4. STORAGE & PAYLOAD LAYER (Distribution Group)
-    %% ==========================================
-    subgraph StorageGroup [dcat:Distribution Domain / File & Download Assets]
-        Distribution[dcat:Distribution] :::mainClass
-        AccessURL["dcat:accessURL (Blob/File Path)"] :::utility
-        DownloadURL["dcat:downloadURL"] :::utility
-        
-        Distribution -- "dcat:accessURL" --> AccessURL
-        Distribution -- "dcat:downloadURL" --> DownloadURL
-    end
-
-    %% ==========================================
-    %% INTER-GROUP LINKS (The Glue Entity)
-    %% ==========================================
-    %% A Dataset bridges the catalog to its actual exposures
-    Dataset[dcat:Dataset] :::mainClass
+erDiagram
+    dcat_Catalog ||--o{ dcat_Dataset : "dcat:dataset"
+    dcat_Catalog ||--o{ dcat_Catalog : "dcat:hasPart"
+    dcat_Catalog ||--o{ dcat_CatalogRecord : "dcat:record"
     
-    Catalog -- "dcat:dataset" --> Dataset
-    Dataset -- "dcat:distribution" --> Distribution
-    Dataset -- "dcat:accessService" --> DataService
-    Distribution -- "dcat:accessService" --> DataService
+    dcat_CatalogRecord ||--|| dcat_Dataset : "foaf:primaryTopic"
+    
+    dcat_Dataset ||--o{ dcat_Distribution : "dcat:distribution"
+    dcat_Dataset ||--o{ dcat_Dataset : "dct:hasVersion"
+    
+    dcat_Catalog {
+        string dct_title
+        string dct_description
+        string dct_publisher
+    }
+    dcat_Dataset {
+        string dct_title
+        string dct_description
+        string dcat_keyword
+        string dct_spatial
+    }
+    dcat_Distribution {
+        string dct_title
+        string dcat_accessURL
+        string dcat_downloadURL
+        string dct_format
+    }
+    dcat_CatalogRecord {
+        string dct_title
+        date dct_issued
+        date dct_modified
+    }
