@@ -1,0 +1,139 @@
+erDiagram
+    %% Core Entity Relationships
+    REPOSITORY ||--o{ INSTITUTION : responsible_institution
+    REPOSITORY ||--o{ FUNDING_INFORMATION : funding_information
+    REPOSITORY ||--o{ POLICY : policy
+    REPOSITORY ||--o{ CERTIFICATE : certificate
+    REPOSITORY ||--o{ METADATA_STANDARD : metadata_standard
+    REPOSITORY ||--o{ SYNDICATION : syndication
+    REPOSITORY ||--o{ API : api
+    REPOSITORY ||--o{ REPOSITORY_LANGUAGE : repository_language
+    REPOSITORY ||--o{ DATA_ACCESS : data_access
+    REPOSITORY ||--o{ DATA_LICENSE : data_license
+    REPOSITORY ||--o{ DATA_UPLOAD : data_upload
+    REPOSITORY ||--o{ DATA_UPLOAD_LICENSE : data_upload_license
+    REPOSITORY ||--o{ PROVIDER_TYPE : provider_type
+    REPOSITORY ||--o{ SUBJECT : subject
+    REPOSITORY ||--o{ KEYWORD : keyword
+    REPOSITORY ||--o{ CONTENT_TYPE : content_type
+    REPOSITORY ||--o{ PID_SYSTEM : pid_system
+    REPOSITORY ||--o{ SOFTWARE : software
+    REPOSITORY ||--o{ QUALITY_MANAGEMENT_MEASURE : quality_management_measure
+    REPOSITORY ||--o{ RELATED_REPOSITORY : related_repository
+    REPOSITORY ||--o{ REMARKS : remarks
+
+    REPOSITORY {
+        string re3data_id PK "Unique identifier"
+        string repositoryName "Mandatory"
+        string repositoryURL "Mandatory"
+        string description "Textual profile (English required)"
+        string repositoryType "disciplinary, institutional, general"
+        string size "Number of datasets or bytes stored"
+        date startDate "Founding date"
+        date endDate "Closure date (if applicable)"
+        string repositoryContact "Email or contact form URL"
+        string databaseAccess "open, restricted, closed"
+        string dataAccessStatus "open, restricted, closed"
+    }
+
+    INSTITUTION {
+        string institutionName "Mandatory"
+        string institutionIdentifier "ROR, Ringgold, ISNI"
+        string institutionType "commercial, non-profit, at_facility"
+        string responsibilityType "funding, general, hosting, technical"
+        string institutionCountry "ISO code"
+    }
+
+    FUNDING_INFORMATION {
+        string funderName "Mandatory (v4.0 feature)"
+        string funderIdentifier "Crossref Funder ID"
+        string fundingProgram "Name of the funding scheme"
+        string awardNumber "Grant identifier"
+    }
+
+    POLICY {
+        string policyName "Mandatory"
+        string policyURL "Mandatory"
+    }
+
+    CERTIFICATE {
+        string certificateName "CoreTrustSeal, ISO 27001, etc."
+        string certificateURL "Link to badge/proof"
+    }
+
+    METADATA_STANDARD {
+        string metadataStandardName "Dublin Core, DataCite, Schema.org"
+        string metadataStandardURL "Reference URL"
+    }
+
+    SYNDICATION {
+        string syndicationType "RSS, Atom feed"
+        string syndicationURL "Feed URL"
+    }
+
+    API {
+        string apiType "OAI-PMH, REST, SPARQL, SWORD"
+        string apiURL "Endpoint URL"
+    }
+
+    DATA_ACCESS {
+        string dataAccessType "open, restricted, closed"
+        string dataAccessRestriction "fee, registration, institutional membership"
+    }
+
+    DATA_LICENSE {
+        string dataLicenseName "CC0, CC-BY, MIT, etc."
+        string dataLicenseURL "Link to legal text"
+    }
+
+    DATA_UPLOAD {
+        string dataUploadType "open, restricted, closed"
+        string dataUploadRestriction "registration, only members"
+    }
+
+    DATA_UPLOAD_LICENSE {
+        string dataUploadLicenseName "Required deposit agreement names"
+        string dataUploadLicenseURL "Link to agreement terms"
+    }
+
+    SUBJECT {
+        string subjectName "DFG classification term"
+        string subjectCode "DFG system numerical code"
+    }
+
+    CONTENT_TYPE {
+        string contentTypeName "COAR Resource Types 3.1 compliance"
+    }
+
+    PID_SYSTEM {
+        string pidSystemName "DOI, ARK, Handle, URN"
+    }
+
+    SOFTWARE {
+        string softwareName "Dataverse, DSpace, CKAN, Invenio"
+    }
+
+    QUALITY_MANAGEMENT_MEASURE {
+        string qualityManagementMeasureName "v4.0 curation process descriptors"
+    }
+
+    RELATED_REPOSITORY {
+        string relatedRepositoryId "Target re3data ID"
+        string relationType "successor, predecessor, etc. (v4.0)"
+    }
+
+    REPOSITORY_LANGUAGE {
+        string languageCode "ISO 639-1 language tag"
+    }
+
+    KEYWORD {
+        string keywordTerm "Free text tag"
+    }
+
+    PROVIDER_TYPE {
+        string providerTypeName "dataProvider, serviceProvider"
+    }
+
+    REMARKS {
+        string remarkText "Curation context notes"
+    }
