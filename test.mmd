@@ -1,0 +1,36 @@
+erDiagram
+    %% Metadata: Domain = E-Commerce, Version = 2.1.0
+    CUSTOMER ||--o{ ORDER : "places"
+    ORDER ||--|{ ORDER_ITEM : "contains"
+    PRODUCT ||--o{ ORDER_ITEM : "ordered in"
+
+    CUSTOMER {
+        string customer_id PK "UUID, Unique identifier"
+        string email UK "Normalized, lowercase"
+        string status "ACTIVE | SUSPENDED | CLOSED"
+        datetime created_at "Audit: Timestamp on insert"
+    }
+
+    ORDER {
+        string order_id PK "UUID"
+        string customer_id FK "References CUSTOMER.customer_id"
+        float total_amount "Calculated sum of items"
+        string currency "ISO 4217 code (e.g., USD, NOK)"
+        datetime ordered_at "Timestamp of checkout"
+    }
+
+    PRODUCT {
+        string product_id PK "UUID"
+        string sku UK "Stock Keeping Unit"
+        string name "Display name"
+        decimal price "Current unit price"
+        bool is_active "Soft delete flag"
+    }
+
+    ORDER_ITEM {
+        string item_id PK "UUID"
+        string order_id FK "References ORDER.order_id"
+        string product_id FK "References PRODUCT.product_id"
+        int quantity "Count, must be > 0"
+        decimal unit_price "Locked price at order time"
+    }
